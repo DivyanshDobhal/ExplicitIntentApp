@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_two"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header / App Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/app_name"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_main" />
+
+            <!-- Activity Badge -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activity 2"
+                android:background="@drawable/badge_activity_two"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/secondary" />
+        </LinearLayout>
+
+        <!-- Main Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_background"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:elevation="4dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/heading_activity_two"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_main"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/desc_activity_two"
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/text_muted"
+                android:layout_marginBottom="18dp" />
+
+            <!-- Explicit Intent Code Preview -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Return Navigation Code:"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_main"
+                android:layout_marginBottom="6dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/code_background"
+                android:padding="14dp"
+                android:layout_marginBottom="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/code_hint_two"
+                    android:fontFamily="monospace"
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="3dp"
+                    android:textColor="@color/code_box_text" />
+            </LinearLayout>
+
+            <!-- Return Button -->
+            <Button
+                android:id="@+id/btnReturnFirst"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/button_activity_two"
+                android:text="@string/btn_return_first"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+        <!-- Informational Footer -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Explicit Intent successfully invoked SecondActivity."
+            android:textSize="12sp"
+            android:textColor="@color/text_muted"
+            android:gravity="center"
+            android:layout_marginTop="12dp" />
+
+    </LinearLayout>
+</ScrollView>

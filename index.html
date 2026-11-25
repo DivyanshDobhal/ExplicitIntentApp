@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explicit Intent Android App - Navigation Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --primary-light: #eef2ff;
+      --secondary: #059669;
+      --secondary-dark: #065f46;
+      --secondary-light: #ecfdf5;
+      --bg-dark: #0f172a;
+      --card-dark: #1e293b;
+      --border-dark: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at top right, #1e1b4b, #0f172a 60%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+    }
+
+    header {
+      text-align: center;
+      max-width: 800px;
+      margin-bottom: 30px;
+    }
+
+    .badge-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(79, 70, 229, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #a5b4fc;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ffffff 40%, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 40px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    /* PHONE FRAME */
+    .phone-wrapper {
+      position: relative;
+      width: 375px;
+      height: 720px;
+      background: #000;
+      border-radius: 46px;
+      padding: 12px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #f8fafc;
+      border-radius: 36px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Notch & Status Bar */
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 24px;
+      background: #000;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      z-index: 50;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 24px 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #334155;
+      z-index: 40;
+    }
+
+    /* SCREENS CONTAINER */
+    .screens-viewport {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .app-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px 24px;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+      color: #0f172a;
+      overflow-y: auto;
+    }
+
+    .app-screen.screen-1 {
+      background: #f8fafc;
+      transform: translateX(0);
+      opacity: 1;
+      z-index: 2;
+    }
+
+    .app-screen.screen-1.hidden-left {
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .app-screen.screen-2 {
+      background: #f0fdf4;
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .app-screen.screen-2.active {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .app-screen.screen-2.hidden-right {
+      transform: translateX(100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Screen Elements */
+    .screen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .screen-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .screen-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+
+    .badge-one {
+      background: #eef2ff;
+      color: #4f46e5;
+      border: 1px solid #c7d2fe;
+    }
+
+    .badge-two {
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+    }
+
+    .screen-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      margin-bottom: 18px;
+    }
+
+    .card-heading {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .code-box {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #38bdf8;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .code-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #475569;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .btn-action {
+      width: 100%;
+      height: 52px;
+      border: none;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-action:active {
+      transform: translateY(1px);
+    }
+
+    .btn-one {
+      background: linear-gradient(135deg, #4f46e5, #4338ca);
+    }
+
+    .btn-two {
+      background: linear-gradient(135deg, #059669, #047857);
+    }
+
+    /* Toast Notification inside phone */
+    .phone-toast {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(50px);
+      background: rgba(15, 23, 42, 0.95);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 100;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .phone-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* SIDE DETAILS PANEL */
+    .details-panel {
+      flex: 1;
+      max-width: 580px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .info-card {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .info-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+    }
+
+    .info-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .key-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .key-points li {
+      font-size: 13.5px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #cbd5e1;
+    }
+
+    .bullet {
+      color: #6366f1;
+      font-weight: bold;
+    }
+
+    .code-snippet {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: #38bdf8;
+      line-height: 1.5;
+      overflow-x: auto;
+    }
+
+    .badge-intent {
+      background: #312e81;
+      color: #c7d2fe;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+        align-items: center;
+      }
+      .phone-wrapper {
+        width: 340px;
+        height: 680px;
+      }
+      .details-panel {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge-header">
+      <span>⚡ Problem Statement 4</span>
+      <span>•</span>
+      <span>Explicit Intent Navigation</span>
+    </div>
+    <h1>Android Explicit Intent Application</h1>
+    <p class="subtitle">
+      Demonstration of navigating between two Android activities using explicit intents with component targets.
+    </p>
+  </header>
+
+  <main class="main-container">
+    <!-- SMARTPHONE PREVIEW -->
+    <div class="phone-wrapper">
+      <div class="phone-screen">
+        <div class="phone-notch"></div>
+        <div class="status-bar" id="statusBar">
+          <span>9:41</span>
+          <span>5G  ●  100%</span>
+        </div>
+
+        <div class="screens-viewport">
+          <!-- SCREEN 1: FirstActivity -->
+          <div class="app-screen screen-1" id="screenOne">
+            <div class="screen-header">
+              <div class="screen-title">Activity 1</div>
+              <span class="screen-badge badge-one">Source Activity</span>
+            </div>
+
+            <div class="screen-card">
+              <h2 class="card-heading">Welcome to Activity 1</h2>
+              <p class="card-desc">
+                This is the entry activity. In Android, an <strong>Explicit Intent</strong> explicitly specifies the target activity class by name.
+              </p>
+
+              <span class="code-label">Explicit Intent Code</span>
+              <div class="code-box">Intent intent = new Intent(
+    FirstActivity.this,
+    SecondActivity.class
+);
+startActivity(intent);</div>
+
+              <button class="btn-action btn-one" id="btnGoSecond" onclick="navigateToSecond()">
+                <span>Go to Second Activity</span>
+                <span>→</span>
+              </button>
+            </div>
+
+            <p style="font-size: 12px; color: #94a3b8; text-align: center;">
+              Tap the button to invoke <code>SecondActivity</code>.
+            </p>
+          </div>
+
+          <!-- SCREEN 2: SecondActivity -->
+          <div class="app-screen screen-2" id="screenTwo">
+            <div class="screen-header">
+              <div class="screen-title">Activity 2</div>
+              <span class="screen-badge badge-two">Target Activity</span>
+            </div>
+
+            <div class="screen-card">
+              <h2 class="card-heading">Arrived at Activity 2</h2>
+              <p class="card-desc">
+                You were navigated here via an <strong>Explicit Intent</strong>. Tap the button below to navigate back to Activity 1.
+              </p>
+
+              <span class="code-label">Return Intent Code</span>
+              <div class="code-box">Intent intent = new Intent(
+    SecondActivity.this,
+    FirstActivity.class
+);
+startActivity(intent);
+finish();</div>
+
+              <button class="btn-action btn-two" id="btnGoFirst" onclick="navigateToFirst()">
+                <span>← Return to First Activity</span>
+              </button>
+            </div>
+
+            <p style="font-size: 12px; color: #94a3b8; text-align: center;">
+              Tap above to return to <code>FirstActivity</code>.
+            </p>
+          </div>
+        </div>
+
+        <!-- In-app Toast message -->
+        <div class="phone-toast" id="phoneToast">Toast message</div>
+      </div>
+    </div>
+
+    <!-- TECHNICAL DETAILS & CODE PANEL -->
+    <div class="details-panel">
+      <!-- Card 1: Problem Statement Overview -->
+      <div class="info-card">
+        <h3>📋 Problem Statement 4 Specification</h3>
+        <p>
+          The requirement requires two activities each having a separate button. Upon clicking on the button of first activity, second activity should open, and upon clicking on the button of second activity, first activity should be displayed.
+        </p>
+        <ul class="key-points">
+          <li><span class="bullet">✔</span> <strong>FirstActivity</strong>: Contains button to trigger explicit intent targeting <code>SecondActivity.class</code>.</li>
+          <li><span class="bullet">✔</span> <strong>SecondActivity</strong>: Contains button to navigate back to <code>FirstActivity.class</code>.</li>
+          <li><span class="bullet">✔</span> <strong>AndroidManifest.xml</strong>: Both activities declared with correct launcher filter.</li>
+        </ul>
+      </div>
+
+      <!-- Card 2: Explicit vs Implicit Intent -->
+      <div class="info-card">
+        <h3>💡 Explicit Intent vs Implicit Intent</h3>
+        <p>
+          An <span class="badge-intent">Explicit Intent</span> specifies the exact component to start by providing the target class name. The Android system immediately launches that specific component without querying other apps:
+        </p>
+        <pre class="code-snippet">// Activity 1 -> Activity 2
+Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
+startActivity(intent);
+
+// Activity 2 -> Activity 1
+Intent returnIntent = new Intent(SecondActivity.this, FirstActivity.class);
+returnIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+startActivity(returnIntent);
+finish();</pre>
+      </div>
+
+      <!-- Card 3: Manifest Configuration -->
+      <div class="info-card">
+        <h3>📱 AndroidManifest.xml Declaration</h3>
+        <pre class="code-snippet">&lt;activity
+    android:name=".FirstActivity"
+    android:exported="true"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="android.intent.action.MAIN" /&gt;
+        &lt;category android:name="android.intent.category.LAUNCHER" /&gt;
+    &lt;/intent-filter&gt;
+&lt;/activity&gt;
+
+&lt;activity
+    android:name=".SecondActivity"
+    android:exported="false" /&gt;</pre>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Explicit Intent Demonstration • Android 15 & Material Components 3</p>
+  </footer>
+
+  <script>
+    const screenOne = document.getElementById('screenOne');
+    const screenTwo = document.getElementById('screenTwo');
+    const toast = document.getElementById('phoneToast');
+    let toastTimeout;
+
+    function showToast(msg) {
+      clearTimeout(toastTimeout);
+      toast.textContent = msg;
+      toast.classList.add('show');
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    function navigateToSecond() {
+      showToast("Starting SecondActivity (Explicit Intent)...");
+      screenOne.classList.add('hidden-left');
+      screenTwo.classList.remove('hidden-right');
+      screenTwo.classList.add('active');
+    }
+
+    function navigateToFirst() {
+      showToast("Returning to FirstActivity...");
+      screenTwo.classList.remove('active');
+      screenTwo.classList.add('hidden-right');
+      screenOne.classList.remove('hidden-left');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Explicit Intent App</string>
+    <string name="first_activity_title">First Activity</string>
+    <string name="second_activity_title">Second Activity</string>
+
+    <string name="tag_activity_one">Activity 1 (Source)</string>
+    <string name="heading_activity_one">Welcome to Activity 1</string>
+    <string name="desc_activity_one">This is the starting activity. An Explicit Intent is used when the target component class name is specified directly in the code.</string>
+    <string name="btn_goto_second">Go to Second Activity →</string>
+    <string name="code_hint_one">Intent intent = new Intent(FirstActivity.this, SecondActivity.class);\nstartActivity(intent);</string>
+
+    <string name="tag_activity_two">Activity 2 (Destination)</string>
+    <string name="heading_activity_two">Arrived at Activity 2</string>
+    <string name="desc_activity_two">You successfully navigated to Activity 2 via an Explicit Intent! Tap the button below to navigate back to Activity 1.</string>
+    <string name="btn_return_first">← Return to First Activity</string>
+    <string name="code_hint_two">// Navigating back to First Activity:\nIntent intent = new Intent(SecondActivity.this, FirstActivity.class);\nstartActivity(intent);</string>
+</resources>
